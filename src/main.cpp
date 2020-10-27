@@ -42,7 +42,7 @@ void onEventsCallback(WebsocketsEvent event, String data)
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(921600);
   WiFi.begin(ssid, password);
 
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++)
@@ -50,16 +50,16 @@ void setup()
     Serial.print("+-+");
     delay(1000);
   }
+  pinMode(LED_BUILTIN, OUTPUT);
   Serial.println(">>");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
-  client.onMessage(onMessageCallback);
+  //client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
 
   client.connect(websockets_server);
   client.ping();
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void flashLed()
@@ -76,17 +76,17 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 1000;
-unsigned long int counter = 0;
+unsigned int interval = 0.85;
+unsigned long long counter = 0;
 
 void loop()
 {
-  if ((millis() - prevMillis) > interval - 1)
-  {
-    client.send("POGGERS");
-    //client.ping();
-    flashLed();
-    prevMillis = millis();
-  }
+  if ((millis() - prevMillis) >= interval)
+    {
+      client.send("POGGERS");
+        //client.ping();
+        flashLed();
+        prevMillis = millis();
+      }
   client.poll();
 }
