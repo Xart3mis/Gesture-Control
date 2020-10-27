@@ -1,0 +1,19 @@
+{
+  "name": "websocketserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "mon": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Xart3mis",
+  "license": "ISC",
+  "dependencies": {
+    "http": "0.0.1-security",
+    "websocket": "^1.0.32"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
