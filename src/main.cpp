@@ -1,12 +1,17 @@
 #include <Arduino.h>
 #include <ArduinoWebsockets.h>
 #include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
 
 int ledState = LOW;
 
 const char *ssid = "DiabFam";
 const char *password = "Yaso$M_M#1804";
 const char *websockets_server = "ws://192.168.1.103:5000";
+String serializedSensorData; 
+
+const int capacity = JSON_OBJECT_SIZE(3);
+StaticJsonDocument<capacity> sensorJson;
 
 bool isConnOpen = false;
 
@@ -66,6 +71,10 @@ void setup()
 
   client.connect(websockets_server);
   client.ping();
+
+  sensorJson["roll"] = 0;
+  sensorJson["yaw"] = 0;
+  sensorJson["pitch"] = 0;
 }
 
 void flashLed()
@@ -89,10 +98,14 @@ void loop()
 {
   if ((millis() - prevMillis) >= interval)
     {
-      client.send("POGGERS");
-        //client.ping();
-        flashLed();
-        prevMillis = millis();
+      sensorJson["roll"] = 42.2622;
+      sensorJson["yaw"] = 48.748010;
+      sensorJson["pitch"] = 2.293491;
+      serializeJson(sensorJson, serializedSensorData);
+      client.send(serializedSensorData);
+      //client.ping();
+      flashLed();
+      prevMillis = millis();
       }
   client.poll();
 }
