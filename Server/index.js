@@ -22,7 +22,7 @@ websocket.on("request", request=> {
     connection.on('ping', () => {console.log(colors.FgYellow + 'got a ping' + colors.Reset); start = Date.now()})
     connection.on("message", message => {
         console.log(`${colors.BgWhite+colors.FgBlack}Received message: ${message.utf8Data} ${colors.Reset}`)
-        connection.send(`got your message: ${message.utf8Data}`)
+        connection.send(`got your message: ${JSON.parse(message.utf8Data)}\n`)
         counter += 1
     })
 
@@ -36,7 +36,7 @@ var elapsed_time = () => {
 
 process.on("SIGINT", () => {
     let finishTime = elapsed_time();
-  console.log(`Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(counter/finishTime).toFixed(4)}`);
+  console.log(`Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(counter/finishTime).toFixed(6)}`);
   process.exit();
 } );
 

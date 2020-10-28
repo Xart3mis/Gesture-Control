@@ -91,18 +91,20 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 0.75;
+unsigned int interval = 0.7;
 unsigned long long counter = 0;
 
 void loop()
 {
+  sensorJson["roll"] = 42.2622;
+  sensorJson["yaw"] = 48.748010;
+  sensorJson["pitch"] = 2.293491;
+  
   if ((millis() - prevMillis) >= interval)
     {
-      sensorJson["roll"] = 42.2622;
-      sensorJson["yaw"] = 48.748010;
-      sensorJson["pitch"] = 2.293491;
-      serializeJson(sensorJson, serializedSensorData);
+      serializeJsonPretty(sensorJson, serializedSensorData);
       client.send(serializedSensorData);
+      serializedSensorData = "";
       //client.ping();
       flashLed();
       prevMillis = millis();
