@@ -91,7 +91,7 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 0.7;
+unsigned int interval = 0.2;
 unsigned long long counter = 0;
 
 void loop()
@@ -102,7 +102,7 @@ void loop()
   
   if ((millis() - prevMillis) >= interval)
     {
-      serializeJsonPretty(sensorJson, serializedSensorData);
+      serializeJson(sensorJson, serializedSensorData);
       client.send(serializedSensorData);
       serializedSensorData = "";
       //client.ping();
