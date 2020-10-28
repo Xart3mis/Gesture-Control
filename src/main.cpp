@@ -43,7 +43,13 @@ void onEventsCallback(WebsocketsEvent event, String data)
 void setup()
 {
   Serial.begin(921600);
-  WiFi.begin(ssid, password);
+  //WiFi.begin(ssid, password);
+  IPAddress ip(192, 168, 1, 118);
+  IPAddress gateway(192, 168, 1, 1);
+  Serial.print(F("Setting static ip to : "));
+  Serial.println(ip);
+  IPAddress subnet(255, 255, 255, 0);
+  WiFi.config(ip, gateway, subnet);
 
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++)
   {
@@ -76,7 +82,7 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 0.85;
+unsigned int interval = 0.75;
 unsigned long long counter = 0;
 
 void loop()
