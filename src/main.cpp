@@ -113,6 +113,7 @@ void loop()
       serializeJson(sensorJson, serializedSensorData);
       client.send(serializedSensorData);
       serializedSensorData = "";
+      gX, gZ, gY = 0.00;
       //client.ping();
       flashLed();
       prevMillis = millis();
