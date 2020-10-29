@@ -99,21 +99,22 @@ unsigned long long counter = 0;
 
 void loop()
 {
-  mySensor.gyroUpdate();
-  gX = mySensor.gyroX();
-  gY = mySensor.gyroY();
-  gZ = mySensor.gyroZ();
-
-  sensorJson["roll"] = gX;
-  sensorJson["yaw"] = gZ;
-  sensorJson["pitch"] = gY;
-
-  serializeJson(sensorJson, serializedSensorData);
-
-  client.send(serializedSensorData);
-
-  serializedSensorData = "";
-  //client.ping();
-  flashLed();      
+  if ((millis() - prevMillis) >= interval)
+    {
+      mySensor.gyroUpdate();
+      gX = mySensor.gyroX();
+      gY = mySensor.gyroY();
+      gZ = mySensor.gyroZ();
+      sensorJson["roll"] = gX;
+      sensorJson["yaw"] = gZ;
+      sensorJson["pitch"] = gY;
+  
+      serializeJson(sensorJson, serializedSensorData);
+      client.send(serializedSensorData);
+      serializedSensorData = "";
+      //client.ping();
+      flashLed();
+      prevMillis = millis();
+      }
   client.poll();
 }
