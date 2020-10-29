@@ -2,16 +2,19 @@
 #include <ArduinoWebsockets.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include <MPU9250_asukiaaa.h>
 
+float gX, gY, gZ;
 int ledState = LOW;
-
+const int capacity = JSON_OBJECT_SIZE(3);
 const char *ssid = "DiabFam";
 const char *password = "Yaso$M_M#1804";
 const char *websockets_server = "ws://192.168.1.103:5000";
+
 String serializedSensorData; 
 
-const int capacity = JSON_OBJECT_SIZE(3);
 StaticJsonDocument<capacity> sensorJson;
+MPU9250_asukiaaa mySensor;
 
 bool isConnOpen = false;
 
@@ -96,12 +99,17 @@ unsigned long long counter = 0;
 
 void loop()
 {
-  sensorJson["roll"] = 42.2622;
-  sensorJson["yaw"] = 48.748010;
-  sensorJson["pitch"] = 2.293491;
-  
+  gX = mySensor.gyroX();
+  gY = mySensor.gyroY();
+  gZ = mySensor.gyroZ();
+
+  sensorJson["roll"] = gX;
+  sensorJson["yaw"] = gZ;
+  sensorJson["pitch"] = gY;
+
   if ((millis() - prevMillis) >= interval)
     {
+      mySensor.gyroUpdate();
       serializeJson(sensorJson, serializedSensorData);
       client.send(serializedSensorData);
       serializedSensorData = "";
