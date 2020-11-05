@@ -74,10 +74,6 @@ void setup()
 
   client.connect(websockets_server);
   client.ping();
-
-  sensorJson["roll"] = 0;
-  sensorJson["yaw"] = 0;
-  sensorJson["pitch"] = 0;
 }
 
 void flashLed()
@@ -101,15 +97,18 @@ void loop()
 {
   if ((millis() - prevMillis) >= interval)
     {
+      /*
       mySensor.gyroUpdate();
       gX = mySensor.gyroX();
       gY = mySensor.gyroY();
       gZ = mySensor.gyroZ();
-      sensorJson["roll"] = gX;
-      sensorJson["yaw"] = gZ;
-      sensorJson["pitch"] = gY;
-  
+      */
+      sensorJson["roll"] = 4.17;
+      sensorJson["yaw"] = 0.00;
+      sensorJson["pitch"] = 55.65;
+
       serializeJson(sensorJson, serializedSensorData);
+
       client.send(serializedSensorData);
       serializedSensorData = "";
       //client.ping();
