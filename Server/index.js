@@ -21,8 +21,10 @@ websocket.on("request", request=> {
     connection.on("open", () => console.log(`${colors.FgGreen}Connection Opened${colors.Reset}`))
     connection.on('ping', () => {console.log(colors.FgYellow + 'got a ping' + colors.Reset); start = Date.now()})
     connection.on("message", message => {
-        console.log(`${colors.BgWhite+colors.FgBlack}Received message: ${message.utf8Data} ${colors.Reset}`)
-        connection.send(`got your message: ${JSON.parse(message.utf8Data)}\n`)
+        RawJson = JSON.parse(message.utf8Data)
+        //console.log(`${colors.BgWhite+colors.FgBlack}Received message: ${message.utf8Data} ${colors.Reset}`)
+        //connection.send(`got your message: ${JSON.parse(message.utf8Data)}\n`)
+        console.log (`Ax:${RawJson.Ax}  Ay:${RawJson.Ay}    Az${RawJson.Az}\nGx:${RawJson.Gx}   Gy:${RawJson.Gy}    Gz:${RawJson.Gz}`)
         counter += 1
     })
 
