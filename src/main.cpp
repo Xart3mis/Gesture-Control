@@ -5,10 +5,10 @@
 #include <Wire.h>
 
 int ledState = LOW;
-const int capacity = JSON_OBJECT_SIZE(3);
-const char *ssid = "Big hero";
-const char *password = "12345678";
-const char *websockets_server = "ws://192.168.1.105:5000";
+const int capacity = JSON_OBJECT_SIZE(6);
+const char *ssid = "DiabFam";
+const char *password = "Yaso$M_M#1804";
+const char *websockets_server = "ws://192.168.1.103:5000";
 const uint8_t MPU6050SlaveAddress = 0x68;
 
 // sensitivity scale factor respective to full scale setting provided in datasheet 
@@ -170,10 +170,13 @@ void loop()
       Serial.print(" Gy: "); Serial.print(Gy);
       Serial.print(" Gz: "); Serial.println(Gz);
 
-      sensorJson["roll"] =AccelX;
-      sensorJson["yaw"] = AccelY;
-      sensorJson["pitch"] = AccelZ;
-
+      sensorJson["Ax"] =Ax;
+      sensorJson["Ay"] = Ay;
+      sensorJson["Az"] = Az;
+      sensorJson["Gx"] = Gx;
+      sensorJson["Gy"] = Gy;
+      sensorJson["Gz"] = Gz;
+      
       serializeJson(sensorJson, serializedSensorData);
 
       client.send(serializedSensorData);
