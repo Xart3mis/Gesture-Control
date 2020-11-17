@@ -52,7 +52,7 @@ U 1 1 5FB5574C
 P 3050 3850
 F 0 "U2" H 3050 4092 50  0000 C CNN
 F 1 "LD1117V33" H 3050 4001 50  0000 C CNN
-F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 3075 3700 50  0001 L CIN
+F 2 "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown" H 3075 3700 50  0001 L CIN
 F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" H 3050 3800 50  0001 C CNN
 	1    3050 3850
 	1    0    0    -1  
@@ -96,7 +96,7 @@ U 1 1 5FB58312
 P 3050 3000
 F 0 "U1" H 3050 3242 50  0000 C CNN
 F 1 "L7806CV" H 3050 3151 50  0000 C CNN
-F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 3075 2850 50  0001 L CIN
+F 2 "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown" H 3075 2850 50  0001 L CIN
 F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" H 3050 2950 50  0001 C CNN
 	1    3050 3000
 	1    0    0    -1  
