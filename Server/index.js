@@ -24,7 +24,7 @@ websocket.on("request", request=> {
         RawJson = JSON.parse(message.utf8Data)
         //console.log(`${colors.BgWhite+colors.FgBlack}Received message: ${message.utf8Data} ${colors.Reset}`)
         //connection.send(`got your message: ${JSON.parse(message.utf8Data)}\n`)
-        console.log (`Ax:${RawJson.Ax}  Ay:${RawJson.Ay}    Az${RawJson.Az}\nGx:${RawJson.Gx}   Gy:${RawJson.Gy}    Gz:${RawJson.Gz}`)
+        console.log (`Ax:${RawJson.Ax}  Ay:${RawJson.Ay}  Az${RawJson.Az}\nGx:${RawJson.Gx}  Gy:${RawJson.Gy}  Gz:${RawJson.Gz}`)
         counter += 1
     })
    //sendevery5seconds();
