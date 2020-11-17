@@ -27,10 +27,9 @@ websocket.on("request", request=> {
         console.log (`Ax:${RawJson.Ax}  Ay:${RawJson.Ay}    Az${RawJson.Az}\nGx:${RawJson.Gx}   Gy:${RawJson.Gy}    Gz:${RawJson.Gz}`)
         counter += 1
     })
-
-
    //sendevery5seconds();
 })
+
 var elapsed_time = () => {
     var elapsed = Date.now() - start
     return elapsed;
@@ -38,10 +37,9 @@ var elapsed_time = () => {
 
 process.on("SIGINT", () => {
     let finishTime = elapsed_time();
-  console.log(`Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(counter/finishTime).toFixed(6)}`);
+  console.log(`Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(counter/finishTime).toFixed(4)}`);
   process.exit();
 } );
-
 
 function sendevery5seconds(){
     connection.send(`Message ${Math.random(10)}\n`);
