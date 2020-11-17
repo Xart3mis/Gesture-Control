@@ -35,6 +35,7 @@ void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data){
   Wire.write(regAddress);
   Wire.write(data);
   Wire.endTransmission();
+  delay(1);
 }
 
 // read all 14 register
@@ -65,6 +66,7 @@ void MPU6050_Init(){
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_INT_ENABLE, 0x01);
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_SIGNAL_PATH_RESET, 0x00);
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_USER_CTRL, 0x00);
+  delay(150);
 }
 
 String serializedSensorData; 
@@ -129,6 +131,7 @@ void setup()
   client.onEvent(onEventsCallback);
 
   client.connect(websockets_server);
+  delay(3000);
   client.ping();
 }
 
@@ -151,21 +154,23 @@ unsigned long long counter = 0;
 
 void loop()
 {
-  double Ax, Ay, Az, T, Gx, Gy, Gz;
-
-  Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
-
+  client.poll();
   if ((millis() - prevMillis) >= interval)
     {
+      double Ax, Ay, Az, Gx, Gy, Gz;
+
+      Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
+      
       Ax = (double)AccelX/AccelScaleFactor;
       Ay = (double)AccelY/AccelScaleFactor;
       Az = (double)AccelZ/AccelScaleFactor;
       Gx = (double)GyroX/GyroScaleFactor;
       Gy = (double)GyroY/GyroScaleFactor;
       Gz = (double)GyroZ/GyroScaleFactor;
-      //Serial.print("Ax: "); Serial.print(Ax);
-      //Serial.print(" Ay: "); Serial.print(Ay);
-      //Serial.print(" Az: "); Serial.print(Az);
+
+      Serial.print("Ax: "); Serial.print(Ax);
+      Serial.print(" Ay: "); Serial.print(Ay);
+      Serial.print(" Az: "); Serial.print(Az);
       Serial.print(" Gx: "); Serial.print(Gx);
       Serial.print(" Gy: "); Serial.print(Gy);
       Serial.print(" Gz: "); Serial.println(Gz);
@@ -185,5 +190,4 @@ void loop()
       flashLed();
       prevMillis = millis();
       }
-  client.poll();
 }
