@@ -1,1 +1,1 @@
-#Too Lazy To Write A Readme rn lol#
+# Too Lazy To Write A Readme rn lol #
