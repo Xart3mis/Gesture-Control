@@ -146,26 +146,12 @@ Wire Wire Line
 	2850 5050 3000 5050
 Text Label 2850 5150 0    50   ~ 0
 SCL
-$Comp
-L Connector:Conn_01x07_Female J2
-U 1 1 5FB66EDE
-P 2650 5250
-F 0 "J2" H 2542 4725 50  0000 C CNN
-F 1 "Conn_01x07_Female" H 2542 4816 50  0000 C CNN
-F 2 "Connector_PinSocket_2.00mm:PinSocket_1x07_P2.00mm_Vertical" H 2650 5250 50  0001 C CNN
-F 3 "~" H 2650 5250 50  0001 C CNN
-	1    2650 5250
-	-1   0    0    1   
-$EndComp
 Text Label 5700 3400 0    50   ~ 0
 SCL
 Text Label 2850 5250 0    50   ~ 0
 SDA
 Text Label 5700 3500 0    50   ~ 0
 SDA
-NoConn ~ 2850 5350
-NoConn ~ 2850 5450
-NoConn ~ 2850 5550
 NoConn ~ 4100 3300
 NoConn ~ 4100 3400
 NoConn ~ 4100 3500
@@ -236,7 +222,6 @@ $EndComp
 Wire Wire Line
 	3800 4200 4100 4200
 NoConn ~ 5700 3300
-NoConn ~ 4650 4550
 $Comp
 L power:+3V3 #PWR08
 U 1 1 5FB5C1C7
@@ -270,4 +255,19 @@ F 3 "" H 4100 4300 50  0001 C CNN
 	1    4100 4300
 	1    0    0    -1  
 $EndComp
+$Comp
+L Connector:Conn_01x08_Female J2
+U 1 1 5FB6B29C
+P 2650 5350
+F 0 "J2" H 2542 4725 50  0000 C CNN
+F 1 "Conn_01x08_Female" H 2542 4816 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical" H 2650 5350 50  0001 C CNN
+F 3 "~" H 2650 5350 50  0001 C CNN
+	1    2650 5350
+	-1   0    0    1   
+$EndComp
+NoConn ~ 2850 5350
+NoConn ~ 2850 5450
+NoConn ~ 2850 5550
+NoConn ~ 2850 5650
 $EndSCHEMATC
