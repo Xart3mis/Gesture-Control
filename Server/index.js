@@ -4,7 +4,10 @@ const colors = require('./colors')
 let connection = null;
 let counter = 0;
 var start;
-
+const thresh = 0.0000001
+let Ax, Ay, Az, Gx, Gy, Gz= 0.00;
+let jAx, jAy, jAz, jGx, jGy, jGz = 0.00;
+let fAx, fAy, fAz, fGx, fGy, fGz = 0.00;
 const httpserver = http.createServer((req, res) => 
                 console.log(`${colors.Hidden}we have received a request${colors.Reset}`))
 
@@ -22,9 +25,12 @@ websocket.on("request", request=> {
     connection.on('ping', () => {console.log(colors.FgYellow + 'got a ping' + colors.Reset); start = Date.now()})
     connection.on("message", message => {
         RawJson = JSON.parse(message.utf8Data)
+        if((Ax - jAx)>thresh){fAx  = Ax; console.log((Ax - jAx))}
+        Ax=(RawJson.Ax*100).toFixed(3);Ay=(RawJson.Ay*100).toFixed(3);Az=(RawJson.Az*100).toFixed(3);Gx=(RawJson.Gx*100).toFixed(3);Gy=(RawJson.Gy*100).toFixed(3); Gz=(RawJson.Gz*100).toFixed(3);
+        
         //console.log(`${colors.BgWhite+colors.FgBlack}Received message: ${message.utf8Data} ${colors.Reset}`)
         //connection.send(`got your message: ${JSON.parse(message.utf8Data)}\n`)
-        console.log (`Ax:${RawJson.Ax}  Ay:${RawJson.Ay}  Az${RawJson.Az}\nGx:${RawJson.Gx}  Gy:${RawJson.Gy}  Gz:${RawJson.Gz}`)
+        console.log (`Ax:${fAx}  Ay:${Ay}  Az${Az} Gx:${Gx}  Gy:${Gy}  Gz:${Gz}`)
         counter += 1
     })
    //sendevery5seconds();
