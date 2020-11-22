@@ -3,12 +3,11 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
 #include <Wire.h>
+#include <secrets.h>
 
 int ledState = LOW;
 const int capacity = JSON_OBJECT_SIZE(6);
-const char *ssid = "DiabFam";
-const char *password = "Yaso$M_M#1804";
-const char *websockets_server = "ws://192.168.1.105:5000";
+const char *websockets_server = "ws://192.168.1.103:5000";
 const uint8_t MPU6050SlaveAddress = 0x68;
 
 // sensitivity scale factor respective to full scale setting provided in datasheet 
@@ -110,7 +109,7 @@ void setup()
   Serial.begin(921600);
   Wire.begin();
   MPU6050_Init();
-  WiFi.begin(ssid, password);
+  WiFi.begin(SECRET_SSID, SECRET_PASS);
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++)
   {
     Serial.print("+-+");
@@ -149,7 +148,7 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 3;
+unsigned int interval = 0.05;
 unsigned long long counter = 0;
 
 void loop()
