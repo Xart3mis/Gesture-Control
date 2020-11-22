@@ -6,8 +6,8 @@
 
 int ledState = LOW;
 const int capacity = JSON_OBJECT_SIZE(6);
-const char *ssid = "Big hero";
-const char *password = "12345678";
+const char *ssid = "DiabFam";
+const char *password = "Yaso$M_M#1804";
 const char *websockets_server = "ws://192.168.1.105:5000";
 const uint8_t MPU6050SlaveAddress = 0x68;
 
