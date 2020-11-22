@@ -7,7 +7,6 @@
 
 int ledState = LOW;
 const int capacity = JSON_OBJECT_SIZE(6);
-const char *websockets_server = "ws://192.168.1.103:5000";
 const uint8_t MPU6050SlaveAddress = 0x68;
 
 // sensitivity scale factor respective to full scale setting provided in datasheet 
@@ -92,7 +91,6 @@ void onEventsCallback(WebsocketsEvent event, String data)
   else if (event == WebsocketsEvent::ConnectionClosed)
   {
     Serial.println("Connnection Closed");
-    client.connect(websockets_server);
   }
   else if (event == WebsocketsEvent::GotPing)
   {
@@ -129,7 +127,7 @@ void setup()
   //client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
 
-  client.connect(websockets_server);
+  client.connect(SECRET_ENDPOINT);
   delay(3000);
   client.ping();
 }
@@ -148,7 +146,7 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 0.05;
+unsigned int interval = 0.000001;
 unsigned long long counter = 0;
 
 void loop()
