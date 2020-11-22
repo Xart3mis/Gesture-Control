@@ -31,7 +31,7 @@ websocket.on("request", request=> {
         Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(4); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(4); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(4);
         Gx = (kf.filter(jsonData.Gx, 1)/GyroScaleFactor).toFixed(4); Gy = (kf.filter(jsonData.Gy, 1)/GyroScaleFactor).toFixed(4); Gz = (kf.filter(jsonData.Gz, 1)/GyroScaleFactor).toFixed(4);
         
-        console.log(`Ax: ${Ax} Ay: ${Ay} Az: ${Az} Gx: ${Gx} Gy: ${Gy} Gz: ${Gz}`)
+        console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
     })
    //sendevery5seconds();
 })
