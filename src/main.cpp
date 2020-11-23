@@ -26,7 +26,7 @@ const uint8_t MPU6050_REGISTER_INT_ENABLE   =  0x38;
 const uint8_t MPU6050_REGISTER_ACCEL_XOUT_H =  0x3B;
 const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET  = 0x68;
 
-int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
+int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;long GyroOffsetX, GyroOffsetY, GyroOffsetZ;
 
 void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data){
   Wire.beginTransmission(deviceAddress);
@@ -124,11 +124,27 @@ void setup()
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
-  //client.onMessage(onMessageCallback);
+  Serial.print("Calibrating gyro");
+  for (int i = 0; i < 2000 ; i ++){      
+    if(i % 125 == 0)Serial.print(".");                              
+    Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);                                            
+    GyroOffsetX += GyroX;                                              
+    GyroOffsetY += GyroY;                                              
+    GyroOffsetZ += GyroZ;                                              
+    delay(3);                                                          
+  }
+  GyroOffsetX /= 2000;                                                  
+  GyroOffsetY /= 2000;
+  GyroOffsetZ /= 2000;
+  Serial.print("\nGyro Calibration Complete with offset X:"); Serial.print(GyroOffsetX);
+  Serial.print(" Y:"); Serial.print(GyroOffsetY);
+  Serial.print(" Z:"); Serial.println(GyroOffsetZ);
+  delay(5000);
+
   client.onEvent(onEventsCallback);
 
   client.connect(SECRET_ENDPOINT);
-  delay(3000);
+  delay(1000);
   client.ping();
 }
 
@@ -152,39 +168,38 @@ unsigned long long counter = 0;
 void loop()
 {
   client.poll();
-  if ((millis() - prevMillis) >= interval)
-    {
-      double Ax, Ay, Az, Gx, Gy, Gz;
+  Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
+  GyroX -= GyroOffsetX;
+  GyroY -= GyroOffsetY;
+  GyroZ -= GyroOffsetZ;
+  /*
+  double Ax, Ay, Az, Gx, Gy, Gz;
+  Ax = (double)AccelX/AccelScaleFactor;
+  Ay = (double)AccelY/AccelScaleFactor;
+  Az = (double)AccelZ/AccelScaleFactor;
+  Gx = (double)GyroX/GyroScaleFactor;
+  Gy = (double)GyroY/GyroScaleFactor;
+  Gz = (double)GyroZ/GyroScaleFactor;
+  
+  Serial.print("Ax: "); Serial.print(Ax);
+  Serial.print(" Ay: "); Serial.print(Ay);
+  Serial.print(" Az: "); Serial.print(Az);
+  Serial.print(" Gx: "); Serial.print(Gx);
+  Serial.print(" Gy: "); Serial.print(Gy);
+  Serial.print(" Gz: "); Serial.println(Gz);*/
 
-      Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
-      
-      Ax = (double)AccelX/AccelScaleFactor;
-      Ay = (double)AccelY/AccelScaleFactor;
-      Az = (double)AccelZ/AccelScaleFactor;
-      Gx = (double)GyroX/GyroScaleFactor;
-      Gy = (double)GyroY/GyroScaleFactor;
-      Gz = (double)GyroZ/GyroScaleFactor;
+  sensorJson["Ax"] = AccelX;
+  sensorJson["Ay"] = AccelY;
+  sensorJson["Az"] = AccelZ;
+  sensorJson["Gx"] = GyroX;
+  sensorJson["Gy"] = GyroY;
+  sensorJson["Gz"] = GyroZ;
+  
+  serializeJson(sensorJson, serializedSensorData);
 
-      Serial.print("Ax: "); Serial.print(Ax);
-      Serial.print(" Ay: "); Serial.print(Ay);
-      Serial.print(" Az: "); Serial.print(Az);
-      Serial.print(" Gx: "); Serial.print(Gx);
-      Serial.print(" Gy: "); Serial.print(Gy);
-      Serial.print(" Gz: "); Serial.println(Gz);
-
-      sensorJson["Ax"] = AccelX;
-      sensorJson["Ay"] = AccelY;
-      sensorJson["Az"] = AccelZ;
-      sensorJson["Gx"] = GyroX;
-      sensorJson["Gy"] = GyroY;
-      sensorJson["Gz"] = GyroZ;
-      
-      serializeJson(sensorJson, serializedSensorData);
-
-      client.send(serializedSensorData);
-      serializedSensorData = "";
-      //client.ping();
-      flashLed();
-      prevMillis = millis();
-      }
+  client.send(serializedSensorData);
+  serializedSensorData = "";
+  //client.ping();
+  flashLed();
+  prevMillis = millis();
 }
