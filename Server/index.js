@@ -31,7 +31,8 @@ websocket.on("request", request=> {
         Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(4); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(4); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(4);
         Gx = (kf.filter(jsonData.Gx, 1)/GyroScaleFactor).toFixed(4); Gy = (kf.filter(jsonData.Gy, 1)/GyroScaleFactor).toFixed(4); Gz = (kf.filter(jsonData.Gz, 1)/GyroScaleFactor).toFixed(4);
         
-        console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
+        //console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
+        console.log(`Ax: ${jsonData.Ax}g Ay: ${jsonData.Ay}g Az: ${jsonData.Az}g Gx: ${jsonData.Gx}°/s Gy: ${jsonData.Gy}°/s Gz: ${jsonData.Gz}°/s`)
     })
    //sendevery5seconds();
 })
@@ -43,7 +44,7 @@ var elapsed_time = () => {
 
 process.on("SIGINT", () => {
     let finishTime = elapsed_time();
-  console.log(`${colors.FgGreen}Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(finishTime/counter).toFixed(4)}`);
+  console.log(`${colors.FgGreen}Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(finishTime/counter).toFixed(4)}${colors.Reset}`);
   process.exit();
 } );
 
