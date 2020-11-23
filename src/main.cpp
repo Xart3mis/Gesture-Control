@@ -146,7 +146,7 @@ void flashLed()
 }
 
 unsigned long long prevMillis = millis();
-unsigned int interval = 0.000001;
+unsigned int interval = 0.5;
 unsigned long long counter = 0;
 
 void loop()
