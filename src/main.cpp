@@ -26,7 +26,7 @@ const uint8_t MPU6050_REGISTER_INT_ENABLE   =  0x38;
 const uint8_t MPU6050_REGISTER_ACCEL_XOUT_H =  0x3B;
 const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET  = 0x68;
 
-int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;long GyroOffsetX, GyroOffsetY, GyroOffsetZ;
+int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ; long GyroOffsetX, GyroOffsetY, GyroOffsetZ;
 
 void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data){
   Wire.beginTransmission(deviceAddress);
