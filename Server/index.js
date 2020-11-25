@@ -7,7 +7,7 @@ var kf = new KalmanFilter({R: 0.01, Q: 3});
 let connection = null;
 let counter = 0;
 var start;
-let Ax, Ay, Az, Gx, Gy, Gz = undefined;
+let Ax, Ay, Az, Gx, Gy, Gz, sGx, sGy, sGz;
 const AccelScaleFactor = 16384;
 const GyroScaleFactor = 131;
 const httpserver = http.createServer((req, res) => 
@@ -20,6 +20,15 @@ const websocket = new WebSocketServer({
 
 httpserver.listen(5000, () => console.log(`${colors.BgWhite+colors.FgGreen}\nMy server is listening on port 5000\nRunning on http://localhost:5000${colors.Reset}`))
 
+function gyroSmoothen(rawGx, rawGy, rawGz) {
+    if (!(rawGx >= 55 || rawGx <= -55)) { sGx = 0; }
+    else { sGx = rawGx }
+    if (!(rawGy >= 55 || rawGy <= -55)) { sGy = 0; }
+    else { sGy = rawGy }
+    if (!(rawGz >= 55 || rawGz <= -55)) { sGz = 0; }
+    else { sGz = rawGz }
+}
+
 websocket.on("request", request=> {
     connection = request.accept(null, request.origin)
     connection.on("close", () => console.log(`${colors.FgRed}Connection Closed${colors.Reset}`))
@@ -28,13 +37,13 @@ websocket.on("request", request=> {
     connection.on("message", message => {
         counter+=1
         jsonData = JSON.parse(message.utf8Data);
-        Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(4); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(4); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(4);
-        Gx = (kf.filter(jsonData.Gx, 1)/GyroScaleFactor).toFixed(4); Gy = (kf.filter(jsonData.Gy, 1)/GyroScaleFactor).toFixed(4); Gz = (kf.filter(jsonData.Gz, 1)/GyroScaleFactor).toFixed(4);
+        gyroSmoothen(jsonData.Gx, jsonData.Gy, jsonData.Gz);
+        Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(3); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(3); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(3);
+        Gx = (kf.filter(sGx, 1)).toFixed(0); Gy = (kf.filter(sGy, 1)).toFixed(0); Gz = (kf.filter(sGz, 1)).toFixed(0);
         
-        //console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
-        console.log(`Ax: ${jsonData.Ax}g Ay: ${jsonData.Ay}g Az: ${jsonData.Az}g Gx: ${jsonData.Gx}°/s Gy: ${jsonData.Gy}°/s Gz: ${jsonData.Gz}°/s`)
+        console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
+        //console.log(`Ax: ${jsonData.Ax}g Ay: ${jsonData.Ay}g Az: ${jsonData.Az}g Gx: ${jsonData.Gx}°/s Gy: ${jsonData.Gy}°/s Gz: ${jsonData.Gz}°/s`)
     })
-   //sendevery5seconds();
 })
 
 var elapsed_time = () => {
@@ -47,8 +56,3 @@ process.on("SIGINT", () => {
   console.log(`${colors.FgGreen}Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(finishTime/counter).toFixed(4)}${colors.Reset}`);
   process.exit();
 } );
-
-function sendevery5seconds(){
-    connection.send(`Message ${Math.random(10)}\n`);
-    setTimeout(sendevery5seconds, 5000);
-}
