@@ -6,6 +6,7 @@
 #include <secrets.h>
 
 int ledState = LOW;
+const int CALIBRATION_BUFFER = 2000;
 const int capacity = JSON_OBJECT_SIZE(6);
 const uint8_t MPU6050SlaveAddress = 0x68;
 
@@ -69,7 +70,7 @@ void MPU6050_Init(){
 
 void CalibrateGyro(){
   Serial.print("Calibrating gyro");
-  for (int i = 0; i < 2000 ; i ++){      
+  for (int i = 0; 100 && i <= (CALIBRATION_BUFFER+100) ; i++){      
     if(i % 125 == 0)Serial.print(".");                              
     Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);                                            
     GyroOffsetX += GyroX;                                              
@@ -77,9 +78,9 @@ void CalibrateGyro(){
     GyroOffsetZ += GyroZ;                                              
     delay(3);                                                          
   }
-  GyroOffsetX /= 2000;                                                  
-  GyroOffsetY /= 2000;
-  GyroOffsetZ /= 2000;
+  GyroOffsetX /= CALIBRATION_BUFFER;                                                  
+  GyroOffsetY /= CALIBRATION_BUFFER;
+  GyroOffsetZ /= CALIBRATION_BUFFER;
   Serial.print("\nGyro Calibration Complete with offset X:"); Serial.print(GyroOffsetX);
   Serial.print(" Y:"); Serial.print(GyroOffsetY);
   Serial.print(" Z:"); Serial.println(GyroOffsetZ);
@@ -163,10 +164,6 @@ void flashLed()
   digitalWrite(LED_BUILTIN, ledState);
 }
 
-unsigned long long prevMillis = millis();
-unsigned int interval = 0.5;
-unsigned long long counter = 0;
-
 void loop()
 {
   client.poll();
@@ -203,5 +200,4 @@ void loop()
   serializedSensorData = "";
   //client.ping();
   flashLed();
-  prevMillis = millis();
 }
