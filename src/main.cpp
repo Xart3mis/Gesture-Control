@@ -67,6 +67,25 @@ void MPU6050_Init(){
   delay(150);
 }
 
+void CalibrateGyro(){
+  Serial.print("Calibrating gyro");
+  for (int i = 0; i < 2000 ; i ++){      
+    if(i % 125 == 0)Serial.print(".");                              
+    Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);                                            
+    GyroOffsetX += GyroX;                                              
+    GyroOffsetY += GyroY;                                              
+    GyroOffsetZ += GyroZ;                                              
+    delay(3);                                                          
+  }
+  GyroOffsetX /= 2000;                                                  
+  GyroOffsetY /= 2000;
+  GyroOffsetZ /= 2000;
+  Serial.print("\nGyro Calibration Complete with offset X:"); Serial.print(GyroOffsetX);
+  Serial.print(" Y:"); Serial.print(GyroOffsetY);
+  Serial.print(" Z:"); Serial.println(GyroOffsetZ);
+  delay(5000);
+}
+
 String serializedSensorData; 
 
 StaticJsonDocument<capacity> sensorJson;
@@ -123,24 +142,7 @@ void setup()
   WiFi.config(ip, gateway, subnet);
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-
-  Serial.print("Calibrating gyro");
-  for (int i = 0; i < 2000 ; i ++){      
-    if(i % 125 == 0)Serial.print(".");                              
-    Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);                                            
-    GyroOffsetX += GyroX;                                              
-    GyroOffsetY += GyroY;                                              
-    GyroOffsetZ += GyroZ;                                              
-    delay(3);                                                          
-  }
-  GyroOffsetX /= 2000;                                                  
-  GyroOffsetY /= 2000;
-  GyroOffsetZ /= 2000;
-  Serial.print("\nGyro Calibration Complete with offset X:"); Serial.print(GyroOffsetX);
-  Serial.print(" Y:"); Serial.print(GyroOffsetY);
-  Serial.print(" Z:"); Serial.println(GyroOffsetZ);
-  delay(5000);
-
+  CalibrateGyro();
   client.onEvent(onEventsCallback);
 
   client.connect(SECRET_ENDPOINT);
