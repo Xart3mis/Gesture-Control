@@ -6,6 +6,8 @@ var kf = new KalmanFilter({R: 0.01, Q: 3});
 
 let connection = null;
 let counter = 0;
+//let GyroOffsetX, GyroOffsetY, GyroOffsetZ;
+//const calibrationBuffer = 2000;
 var start;
 let Ax, Ay, Az, Gx, Gy, Gz, sGx, sGy, sGz;
 const AccelScaleFactor = 16384;
@@ -39,9 +41,13 @@ websocket.on("request", request=> {
         jsonData = JSON.parse(message.utf8Data);
         gyroSmoothen(jsonData.Gx, jsonData.Gy, jsonData.Gz);
         Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(3); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(3); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(3);
-        Gx = (kf.filter(sGx, 1)).toFixed(0); Gy = (kf.filter(sGy, 1)).toFixed(0); Gz = (kf.filter(sGz, 1)).toFixed(0);
-        
-        console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`)
+        Gx = (kf.filter(sGx, 1)/GyroScaleFactor).toFixed(0); Gy = (kf.filter(sGy, 1)/GyroScaleFactor).toFixed(0); Gz = (kf.filter(sGz, 1)/GyroScaleFactor).toFixed(0);
+        /*
+        if (counter <= calibrationBuffer) { GyroOffsetX += Gx; GyroOffsetY += Gy; GyroOffsetZ += Gz; console.log('calibrating' + counter) }
+        if (counter == calibrationBuffer+1){GyroOffsetX /= calibrationBuffer; GyroOffsetY /= calibrationBuffer; GyroOffsetZ /= calibrationBuffer;}
+        Gx -= GyroOffsetX; Gy -= GyroOffsetY; Gz -= GyroOffsetZ;
+        */
+        console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`);
         //console.log(`Ax: ${jsonData.Ax}g Ay: ${jsonData.Ay}g Az: ${jsonData.Az}g Gx: ${jsonData.Gx}°/s Gy: ${jsonData.Gy}°/s Gz: ${jsonData.Gz}°/s`)
     })
 })
