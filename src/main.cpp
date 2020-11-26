@@ -145,9 +145,10 @@ void setup()
   Serial.println(WiFi.localIP());
   CalibrateGyro();
   client.onEvent(onEventsCallback);
-
+  Serial.println("Connecting to Server");
   client.connect(SECRET_ENDPOINT);
   delay(1000);
+  Serial.println("Pinging Server");
   client.ping();
 }
 
