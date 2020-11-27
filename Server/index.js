@@ -3,6 +3,9 @@ const WebSocketServer = require("websocket").server
 const colors = require('./colors')
 var KalmanFilter = require('kalmanjs');
 var kf = new KalmanFilter({R: 0.01, Q: 3});
+const { keyboard } = require("@nut-tree/nut-js");
+
+keyboard.config.autoDelayMs = 0;
 
 let connection = null;
 let counter = 0;
@@ -10,8 +13,10 @@ let counter = 0;
 //const calibrationBuffer = 2000;
 var start;
 let Ax, Ay, Az, Gx, Gy, Gz, sGx, sGy, sGz;
+let oldGx, oldGy, oldGz =0;
 const AccelScaleFactor = 16384;
 const GyroScaleFactor = 131;
+const gyroHidThreshhold = 3;
 const httpserver = http.createServer((req, res) => 
                 console.log(`${colors.Hidden}we have received a request${colors.Reset}`))
 
@@ -42,6 +47,10 @@ websocket.on("request", request=> {
         gyroSmoothen(jsonData.Gx, jsonData.Gy, jsonData.Gz);
         Ax = (kf.filter(jsonData.Ax, 1)/AccelScaleFactor).toFixed(3); Ay = (kf.filter(jsonData.Ay, 1)/AccelScaleFactor).toFixed(3); Az = (kf.filter(jsonData.Az, 1)/AccelScaleFactor).toFixed(3);
         Gx = (kf.filter(sGx, 1)/GyroScaleFactor).toFixed(0); Gy = (kf.filter(sGy, 1)/GyroScaleFactor).toFixed(0); Gz = (kf.filter(sGz, 1)/GyroScaleFactor).toFixed(0);
+        if(Gy-oldGy==gyroHidThreshhold){keyboard.type("d")}
+        if(oldGy-Gy==gyroHidThreshhold){keyboard.type("a")}
+        if(oldGx-Gx==gyroHidThreshhold){keyboard.type("w")}
+        if(Gx-oldGx==gyroHidThreshhold){keyboard.type("s")}
         /*
         if (counter <= calibrationBuffer) { GyroOffsetX += Gx; GyroOffsetY += Gy; GyroOffsetZ += Gz; console.log('calibrating' + counter) }
         if (counter == calibrationBuffer+1){GyroOffsetX /= calibrationBuffer; GyroOffsetY /= calibrationBuffer; GyroOffsetZ /= calibrationBuffer;}
@@ -49,6 +58,7 @@ websocket.on("request", request=> {
         */
         console.log(`Ax: ${Ax}g Ay: ${Ay}g Az: ${Az}g Gx: ${Gx}°/s Gy: ${Gy}°/s Gz: ${Gz}°/s`);
         //console.log(`Ax: ${jsonData.Ax}g Ay: ${jsonData.Ay}g Az: ${jsonData.Az}g Gx: ${jsonData.Gx}°/s Gy: ${jsonData.Gy}°/s Gz: ${jsonData.Gz}°/s`)
+        oldGx = Gx; oldGy = Gy; oldGz = Gz;
     })
 })
 
