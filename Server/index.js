@@ -15,7 +15,7 @@ let Ax, Ay, Az, Gx, Gy, Gz, sGx, sGy, sGz;
 let oldGx, oldGy, oldGz =0;
 const AccelScaleFactor = 16384;
 const GyroScaleFactor = 131;
-const gyroHidThreshhold = 5;
+const gyroHidThreshhold = 3;
 const httpserver = http.createServer((req, res) => 
                 console.log(`${colors.Hidden}we have received a request${colors.Reset}`))
 
@@ -48,6 +48,8 @@ websocket.on("request", request=> {
         Gx = (kf.filter(sGx, 1)/GyroScaleFactor).toFixed(0); Gy = (kf.filter(sGy, 1)/GyroScaleFactor).toFixed(0); Gz = (kf.filter(sGz, 1)/GyroScaleFactor).toFixed(0);
         if(Gy-oldGy==gyroHidThreshhold){keyboard.type("d")}
         if(oldGy-Gy==gyroHidThreshhold){keyboard.type("a")}
+        if(oldGx-Gx==gyroHidThreshhold){keyboard.type("w")}
+        if(Gx-oldGx==gyroHidThreshhold){keyboard.type("s")}
         /*
         if (counter <= calibrationBuffer) { GyroOffsetX += Gx; GyroOffsetY += Gy; GyroOffsetZ += Gz; console.log('calibrating' + counter) }
         if (counter == calibrationBuffer+1){GyroOffsetX /= calibrationBuffer; GyroOffsetY /= calibrationBuffer; GyroOffsetZ /= calibrationBuffer;}
