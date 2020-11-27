@@ -5,6 +5,7 @@ var KalmanFilter = require('kalmanjs');
 var kf = new KalmanFilter({R: 0.01, Q: 3});
 const { keyboard } = require("@nut-tree/nut-js");
 
+keyboard.config.autoDelayMs = 0;
 
 let connection = null;
 let counter = 0;
