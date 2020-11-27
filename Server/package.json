@@ -1,19 +1,22 @@
 {
-  "name": "websocketserver",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "mon": "nodemon index.js"
-  },
-  "keywords": [],
-  "author": "Xart3mis",
-  "license": "ISC",
-  "dependencies": {
-    "http": "0.0.1-security",
-    "websocket": "^1.0.32"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.6"
-  }
+	"name": "websocketserver",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"mon": "nodemon index.js",
+		"test": "node Server.test.js"
+	},
+	"keywords": [],
+	"author": "Xart3mis",
+	"license": "ISC",
+	"dependencies": {
+		"@nut-tree/nut-js": "^1.5.0",
+		"http": "0.0.1-security",
+		"kalmanjs": "^1.1.0",
+		"websocket": "^1.0.32"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.6"
+	}
 }
