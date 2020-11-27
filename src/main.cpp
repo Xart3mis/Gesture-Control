@@ -3,20 +3,11 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
 #include <Wire.h>
-<<<<<<< HEAD
-
-int ledState = LOW;
-const int capacity = JSON_OBJECT_SIZE(3);
-const char *ssid = "Big hero";
-const char *password = "12345678";
-const char *websockets_server = "ws://192.168.1.105:5000";
-=======
 #include <secrets.h>
 
 int ledState = LOW;
 const int CALIBRATION_BUFFER = 2000;
 const int capacity = JSON_OBJECT_SIZE(6);
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
 const uint8_t MPU6050SlaveAddress = 0x68;
 
 // sensitivity scale factor respective to full scale setting provided in datasheet 
@@ -36,21 +27,14 @@ const uint8_t MPU6050_REGISTER_INT_ENABLE   =  0x38;
 const uint8_t MPU6050_REGISTER_ACCEL_XOUT_H =  0x3B;
 const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET  = 0x68;
 
-<<<<<<< HEAD
-int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
-=======
 int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ; long GyroOffsetX, GyroOffsetY, GyroOffsetZ;
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
 
 void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data){
   Wire.beginTransmission(deviceAddress);
   Wire.write(regAddress);
   Wire.write(data);
   Wire.endTransmission();
-<<<<<<< HEAD
-=======
   delay(1);
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
 }
 
 // read all 14 register
@@ -81,8 +65,6 @@ void MPU6050_Init(){
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_INT_ENABLE, 0x01);
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_SIGNAL_PATH_RESET, 0x00);
   I2C_Write(MPU6050SlaveAddress, MPU6050_REGISTER_USER_CTRL, 0x00);
-<<<<<<< HEAD
-=======
   delay(150);
 }
 
@@ -103,7 +85,6 @@ void CalibrateGyro(){
   Serial.print(" Y:"); Serial.print(GyroOffsetY);
   Serial.print(" Z:"); Serial.println(GyroOffsetZ);
   delay(5000);
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
 }
 
 String serializedSensorData; 
@@ -146,11 +127,7 @@ void setup()
   Serial.begin(921600);
   Wire.begin();
   MPU6050_Init();
-<<<<<<< HEAD
-  WiFi.begin(ssid, password);
-=======
   WiFi.begin(SECRET_SSID, SECRET_PASS);
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++)
   {
     Serial.print("+-+");
@@ -188,46 +165,6 @@ void flashLed()
   digitalWrite(LED_BUILTIN, ledState);
 }
 
-<<<<<<< HEAD
-unsigned long long prevMillis = millis();
-unsigned int interval = 3;
-unsigned long long counter = 0;
-
-void loop()
-{
-  double Ax, Ay, Az, T, Gx, Gy, Gz;
-
-  Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
-
-  if ((millis() - prevMillis) >= interval)
-    {
-      Ax = (double)AccelX/AccelScaleFactor;
-      Ay = (double)AccelY/AccelScaleFactor;
-      Az = (double)AccelZ/AccelScaleFactor;
-      Gx = (double)GyroX/GyroScaleFactor;
-      Gy = (double)GyroY/GyroScaleFactor;
-      Gz = (double)GyroZ/GyroScaleFactor;
-      //Serial.print("Ax: "); Serial.print(Ax);
-      //Serial.print(" Ay: "); Serial.print(Ay);
-      //Serial.print(" Az: "); Serial.print(Az);
-      Serial.print(" Gx: "); Serial.print(Gx);
-      Serial.print(" Gy: "); Serial.print(Gy);
-      Serial.print(" Gz: "); Serial.println(Gz);
-
-      sensorJson["roll"] =AccelX;
-      sensorJson["yaw"] = AccelY;
-      sensorJson["pitch"] = AccelZ;
-
-      serializeJson(sensorJson, serializedSensorData);
-
-      client.send(serializedSensorData);
-      serializedSensorData = "";
-      //client.ping();
-      flashLed();
-      prevMillis = millis();
-      }
-  client.poll();
-=======
 void loop()
 {
   client.poll();
@@ -264,5 +201,4 @@ void loop()
   serializedSensorData = "";
   //client.ping();
   flashLed();
->>>>>>> 8e13f0a86722021159837147ab7ef1b9349dd1c4
 }
