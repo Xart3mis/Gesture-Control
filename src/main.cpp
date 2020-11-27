@@ -143,7 +143,7 @@ void setup()
   WiFi.config(ip, gateway, subnet);
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-  CalibrateGyro();
+  //CalibrateGyro();
   client.onEvent(onEventsCallback);
   Serial.println("Connecting to Server");
   client.connect(SECRET_ENDPOINT);
