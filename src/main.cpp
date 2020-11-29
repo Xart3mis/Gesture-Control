@@ -27,7 +27,7 @@ const uint8_t MPU6050_REGISTER_INT_ENABLE   =  0x38;
 const uint8_t MPU6050_REGISTER_ACCEL_XOUT_H =  0x3B;
 const uint8_t MPU6050_REGISTER_SIGNAL_PATH_RESET  = 0x68;
 
-int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ; long GyroOffsetX, GyroOffsetY, GyroOffsetZ;
+int16_t AccelX, AccelY, AccelZ, Temperature, GyroX, GyroY, GyroZ;
 
 void I2C_Write(uint8_t deviceAddress, uint8_t regAddress, uint8_t data){
   Wire.beginTransmission(deviceAddress);
@@ -68,25 +68,6 @@ void MPU6050_Init(){
   delay(150);
 }
 
-void CalibrateGyro(){
-  Serial.print("Calibrating gyro");
-  for (int i = 0; 100 && i <= (CALIBRATION_BUFFER+100) ; i++){      
-    if(i % 125 == 0)Serial.print(".");                              
-    Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);                                            
-    GyroOffsetX += GyroX;                                              
-    GyroOffsetY += GyroY;                                              
-    GyroOffsetZ += GyroZ;                                              
-    delay(3);                                                          
-  }
-  GyroOffsetX /= CALIBRATION_BUFFER;                                                  
-  GyroOffsetY /= CALIBRATION_BUFFER;
-  GyroOffsetZ /= CALIBRATION_BUFFER;
-  Serial.print("\nGyro Calibration Complete with offset X:"); Serial.print(GyroOffsetX);
-  Serial.print(" Y:"); Serial.print(GyroOffsetY);
-  Serial.print(" Z:"); Serial.println(GyroOffsetZ);
-  delay(5000);
-}
-
 String serializedSensorData; 
 
 StaticJsonDocument<capacity> sensorJson;
@@ -107,10 +88,12 @@ void onEventsCallback(WebsocketsEvent event, String data)
   if (event == WebsocketsEvent::ConnectionOpened)
   {
     Serial.println("Connnection Opened");
+    isConnOpen = true;
   }
   else if (event == WebsocketsEvent::ConnectionClosed)
   {
     Serial.println("Connnection Closed");
+    isConnOpen = false;
   }
   else if (event == WebsocketsEvent::GotPing)
   {
@@ -143,7 +126,6 @@ void setup()
   WiFi.config(ip, gateway, subnet);
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-  //CalibrateGyro();
   client.onEvent(onEventsCallback);
   Serial.println("Connecting to Server");
   client.connect(SECRET_ENDPOINT);
@@ -169,9 +151,7 @@ void loop()
 {
   client.poll();
   Read_RawValue(MPU6050SlaveAddress, MPU6050_REGISTER_ACCEL_XOUT_H);
-  GyroX -= GyroOffsetX;
-  GyroY -= GyroOffsetY;
-  GyroZ -= GyroOffsetZ;
+  
   /*
   double Ax, Ay, Az, Gx, Gy, Gz;
   Ax = (double)AccelX/AccelScaleFactor;
@@ -199,6 +179,5 @@ void loop()
 
   client.send(serializedSensorData);
   serializedSensorData = "";
-  //client.ping();
   flashLed();
 }
