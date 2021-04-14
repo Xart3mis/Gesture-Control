@@ -10,6 +10,9 @@ var counter = 0;
 var start;
 var Ax, Ay, Az, Gx, Gy, Gz;
 var oldGx, oldGy, oldGz = 0;
+
+var GxArray = []; var GyArray = []; GzArray = [];
+
 const gofsts = require('./offsets.json');
 const AccelScaleFactor = 16384;
 const GyroScaleFactor = 131;
