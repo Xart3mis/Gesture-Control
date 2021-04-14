@@ -5,11 +5,11 @@ var KalmanFilter = require('kalmanjs');
 const { keyboard } = require("@nut-tree/nut-js");
 keyboard.config.autoDelayMs = 0;
 
-let connection = null;
-let counter = 0;
+var connection = null;
+var counter = 0;
 var start;
-let Ax, Ay, Az, Gx, Gy, Gz;
-let oldGx, oldGy, oldGz = 0;
+var Ax, Ay, Az, Gx, Gy, Gz;
+var oldGx, oldGy, oldGz = 0;
 const gofsts = require('./offsets.json');
 const AccelScaleFactor = 16384;
 const GyroScaleFactor = 131;
@@ -59,7 +59,7 @@ var elapsed_time = () => {
 }
 
 process.on("SIGINT", () => {
-    let finishTime = elapsed_time();
+    var finishTime = elapsed_time();
     console.log(`\n${colors.FgGreen}Recieved ${counter} messages in ${finishTime}ms, avg ms/msg:${(finishTime/counter).toFixed(4)}${colors.Reset}`);
     //calculateGyroOffset(counter)
     process.exit();
