@@ -5,4 +5,4 @@
 .vscode/ipch
 node_modules/
 .vscode
-secrets.h
+Secrets/
