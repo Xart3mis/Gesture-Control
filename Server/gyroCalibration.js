@@ -32,7 +32,7 @@ function calculateGyroOffset(count) {
     for (var y = 0; y < ValuesGy.length; y++) { offset.OffsetY += ValuesGy[y]; };
     for (var z = 0; z < ValuesGz.length; z++) { offset.OffsetZ += ValuesGz[z]; };
     //console.log(`sumX:${offset.OffsetX} sumY:${offset.OffsetY}  sumZ:${offset.OffsetZ}`);
-    offset.OffsetX /= count; offset.OffsetX = offset.OffsetX.toFixed(0); 
+    offset.OffsetX /= count; offset.OffsetX = offset.OffsetX.toFixed(0);
     offset.OffsetY /= count; offset.OffsetY = offset.OffsetY.toFixed(0);
     offset.OffsetZ /= count; offset.OffsetZ = offset.OffsetZ.toFixed(0);
     console.log(offset)
