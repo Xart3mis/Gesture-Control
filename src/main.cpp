@@ -44,10 +44,13 @@ void Read_RawValue(uint8_t deviceAddress, uint8_t regAddress) {
   Wire.write(regAddress);
   Wire.endTransmission();
   Wire.requestFrom(deviceAddress, (uint8_t)14);
+
   AccelX = (((int16_t)Wire.read() << 8) | Wire.read());
   AccelY = (((int16_t)Wire.read() << 8) | Wire.read());
   AccelZ = (((int16_t)Wire.read() << 8) | Wire.read());
+
   Temperature = (((int16_t)Wire.read() << 8) | Wire.read());
+
   GyroX = (((int16_t)Wire.read() << 8) | Wire.read());
   GyroY = (((int16_t)Wire.read() << 8) | Wire.read());
   GyroZ = (((int16_t)Wire.read() << 8) | Wire.read());
@@ -102,28 +105,37 @@ void onEventsCallback(WebsocketsEvent event, String data) {
 void setup() {
   Serial.begin(921600);
   Wire.begin();
-  MPU6050_Init();
+
   WiFi.begin(SECRET_SSID, SECRET_PASS);
+
   for (int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++) {
     Serial.print("+-+");
     delay(1000);
   }
-  pinMode(LED_BUILTIN, OUTPUT);
   Serial.println(">>");
+
   IPAddress ip(192, 168, 1, 32);
   IPAddress gateway(192, 168, 1, 1);
+
   Serial.print(F("Setting static ip to : "));
   Serial.println(ip);
   IPAddress subnet(255, 255, 255, 0);
   WiFi.config(ip, gateway, subnet);
+
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
+
   client.onEvent(onEventsCallback);
+
   Serial.println("Connecting to Server");
   client.connect(SECRET_ENDPOINT);
   delay(1000);
+
   Serial.println("Pinging Server");
   client.ping();
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  MPU6050_Init();
 }
 
 void flashLed() {
@@ -132,6 +144,7 @@ void flashLed() {
   } else {
     ledState = LOW;
   }
+
   digitalWrite(LED_BUILTIN, ledState);
 }
 
